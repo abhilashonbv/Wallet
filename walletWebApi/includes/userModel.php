@@ -47,9 +47,9 @@ class UserModel extends Database
     
     protected function getSignUp($request)
     {
-        $username  = $request['username'];
-        $mobile    = $request['mobile'];
-        $countryCode= $request['countryCode'];
+        $username  = trim($request['username']);
+        $mobile    = trim($request['mobile']);
+        $countryCode= trim($request['countryCode']);
         $password  = md5($request['password']);
         $date      = date('Y-m-d h:i:s', time());
         $tokenData = time() . "_" . $username;

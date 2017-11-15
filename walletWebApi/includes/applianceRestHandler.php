@@ -44,9 +44,9 @@ class ApplianceRestHandler extends ApplianceModel
         }
     }
 
-    public function ScanAppliance($request,$file)
+    public function ScanAppliance($request)
     {
-        $rawData = $this->applianceScan($request,$file);
+        $rawData = $this->applianceScan($request);
         if (empty($rawData)) {
             $statusCode = 404;
             $rawData    = array(
@@ -65,9 +65,9 @@ class ApplianceRestHandler extends ApplianceModel
         }
     }
 
-    public function UploadAppliance($request,$file)
+    public function UploadAppliance($request)
     {
-        $rawData = $this->applianceUpload($request,$file);
+        $rawData = $this->applianceUpload($request);
         if (empty($rawData)) {
             $statusCode = 404;
             $rawData    = array(
@@ -106,5 +106,48 @@ class ApplianceRestHandler extends ApplianceModel
             echo $response;
         }
     }
+
+    public function ApplianceExtendWarranty($request)
+    {
+        $rawData = $this->ExtendWarranty($request);
+        if (empty($rawData)) {
+            $statusCode = 404;
+            $rawData    = array(
+                'error' => 'No Data found!'
+            );
+        } else {
+            $statusCode = 200;
+        }
+        
+        $requestContentType = 'application/json';
+        $this->setHttpHeaders($requestContentType, $statusCode);
+        
+        if (strpos($requestContentType, 'application/json') !== false) {
+            $response = $this->encodeJson($rawData);
+            echo $response;
+        }
+    }
+
+    public function ApplianceExtendWarrantyList($request)
+    {
+        $rawData = $this->ExtendWarrantyList($request);
+        if (empty($rawData)) {
+            $statusCode = 404;
+            $rawData    = array(
+                'error' => 'No Data found!'
+            );
+        } else {
+            $statusCode = 200;
+        }
+        
+        $requestContentType = 'application/json';
+        $this->setHttpHeaders($requestContentType, $statusCode);
+        
+        if (strpos($requestContentType, 'application/json') !== false) {
+            $response = $this->encodeJson($rawData);
+            echo $response;
+        }
+    }
+    
 }
 ?>
