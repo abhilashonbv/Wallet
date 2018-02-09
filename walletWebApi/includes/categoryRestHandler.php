@@ -47,6 +47,7 @@ class CategoryRestHandler extends CategoryModel
     public function getManufacturerList($request)
     {
         $rawData = $this->manufacturerList($request);
+        
         if (empty($rawData)) {
             $statusCode = 404;
             $rawData    = array(
@@ -55,15 +56,17 @@ class CategoryRestHandler extends CategoryModel
         } else {
             $statusCode = 200;
         }
-        
+
         $requestContentType = 'application/json';
         $this->setHttpHeaders($requestContentType, $statusCode);
         
         if (strpos($requestContentType, 'application/json') !== false) {
             $response = $this->encodeJson($rawData);
             echo $response;
-        }
+       }
     }
+
+
     
 }
 ?>

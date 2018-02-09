@@ -6,19 +6,21 @@ class Database
     private $username;
     private $password;
     private $dbname;
-    
+    private $httpVersion = "HTTP/1.1";
+
+
     protected function connect()
     {
         $this->servername = "localhost";
         $this->username   = "root";
-        $this->password   = "ubuntu@2016";
+        $this->password   = "ubuntu@2017";
         $this->dbname     = "warrantyWallet";
         
         $conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
         return $conn;   
     }
     
-    protected function verifyToken($userId,$token)
+    public function verifyToken($userId,$token)
     {
         $sql     = "SELECT * FROM `users` WHERE `user_id`='$userId' AND `session_token`='$token'";
         $result  = $this->connect()->query($sql);
@@ -29,20 +31,22 @@ class Database
             return false;
         }
     }
-    
-    // protected function logApiAction($data)
-    // {
-    //     $sql     = "SELECT * FROM `users` WHERE `user_id`='$userId' AND `session_token`='$token'";
-    //     $result  = $this->connect()->query($sql);
-    //     $Numrows = mysqli_num_rows($result);
-    //     if ($Numrows > 0) {
-    //         return true;
-    //     }else{
-    //         return false;
-    //     }
-    // }
-    
-    protected function setHttpHeaders($contentType, $statusCode)
+
+    public function getNameById($subCatName,$manufacturer)
+    {
+        $subcategory = "SELECT * FROM `sub_category` WHERE `subcategory_name`='$subCatName'";
+        $subcategoryData  = $this->connect()->query($subcategory);
+        $SubId = $subcategoryData->fetch_assoc();
+        $subcat_id =$SubId['subcategory_id'];
+
+        $manufacturerSql = "SELECT * FROM `manufacturer` WHERE `manufacturer_subcat_id`='$subcat_id' And `manufacturer_name`='$manufacturer'";
+        $manufacturerRes = $this->connect()->query($manufacturerSql);
+        $manufacturerData = $manufacturerRes->fetch_assoc();
+        $warranty =$manufacturerData['warranty_url'];
+        return $warranty;
+    }
+
+    public function setHttpHeaders($contentType, $statusCode)
     {
         
         $statusMessage = $this->getHttpStatusMessage($statusCode);
@@ -50,8 +54,8 @@ class Database
         header($this->httpVersion . " " . $statusCode . " " . $statusMessage);
         header("Content-Type:" . $contentType);
     }
-    
-    protected function getHttpStatusMessage($statusCode)
+
+    public function getHttpStatusMessage($statusCode)
     {
         $httpStatus = array(
             100 => 'Continue',
@@ -98,11 +102,21 @@ class Database
         );
         return ($httpStatus[$statusCode]) ? $httpStatus[$statusCode] : $status[500];
     }
-    
-    protected function encodeJson($responseData)
+
+    public function encodeJson($responseData)
     {
         $jsonResponse = json_encode($responseData);
         return $jsonResponse;
+    }
+
+    public function ChangeDateDMY($date)
+    {
+        return $newDate = date("d-m-Y", strtotime($date));
+    }
+
+    public function ChangeDateYMD($date)
+    {
+        return $newDate = date("Y-m-d", strtotime($date));
     }
 }
 
